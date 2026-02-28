@@ -1857,7 +1857,7 @@ static int sensor_g_chip_ident(struct tx_isp_subdev *sd,
 	int ret = ISP_SUCCESS;
 
 	sensor_attr_check(sd);
-	if (sensor_gpio_valid(reset_gpio)) {
+	if (reset_gpio != -1) {
 		ret = private_gpio_request(reset_gpio, "sensor_reset");
 		if (!ret) {
 			private_gpio_direction_output(reset_gpio, 1);
@@ -1870,7 +1870,7 @@ static int sensor_g_chip_ident(struct tx_isp_subdev *sd,
 			ISP_ERROR("gpio request fail %d\n", reset_gpio);
 		}
 	}
-	if (sensor_gpio_valid(pwdn_gpio)) {
+	if (pwdn_gpio != -1) {
 		ret = private_gpio_request(pwdn_gpio, "sensor_pwdn");
 		if (!ret) {
 			private_gpio_direction_output(pwdn_gpio, 1);
@@ -2059,9 +2059,9 @@ static int sensor_remove(struct i2c_client *client) {
 	struct tx_isp_subdev *sd = private_i2c_get_clientdata(client);
 	struct tx_isp_sensor *sensor = tx_isp_get_subdev_hostdata(sd);
 
-	if (sensor_gpio_valid(reset_gpio))
+	if (reset_gpio != -1)
 		private_gpio_free(reset_gpio);
-	if (sensor_gpio_valid(pwdn_gpio))
+	if (pwdn_gpio != -1)
 		private_gpio_free(pwdn_gpio);
 
 	private_clk_disable_unprepare(sensor->mclk);
